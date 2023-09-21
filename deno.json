@@ -1,0 +1,11 @@
+{
+  "lint": {
+    "exclude": ["./protos/"]
+  },
+  "fmt": {
+    "exclude": ["./protos/"]
+  },
+  "test": {
+    "exclude": ["./protos/"]
+  }
+}
