@@ -1,0 +1,73 @@
+{
+  "metadata": {
+    "cursor": "64900101539623"
+  },
+  "shelves": [
+    {
+      "id": "S01",
+      "name": "シェルフ",
+      "pose": {
+        "x": 0.235971,
+        "y": -0.754295,
+        "theta": 1.466453
+      },
+      "size": {
+        "width": 0.489,
+        "depth": 0.329,
+        "height": 1.5
+      },
+      "appearance": "SHELF_APPEARANCE_KACHAKA_SHELF_3DRAWERS",
+      "recognizableNames": [
+        {
+          "name": "シェルフ"
+        }
+      ],
+      "homeLocationId": "S01_home",
+      "speedMode": "SHELF_SPEED_MODE_NORMAL"
+    },
+    {
+      "id": "S02",
+      "name": "ゴミ箱",
+      "pose": {
+        "x": 0.802314,
+        "y": 1.136255,
+        "theta": -3.118123
+      },
+      "size": {
+        "width": 0.489,
+        "depth": 0.329,
+        "height": 1.5
+      },
+      "appearance": "SHELF_APPEARANCE_KACHAKA_SHELF_3DRAWERS",
+      "recognizableNames": [
+        {
+          "name": "ゴミ箱"
+        }
+      ],
+      "homeLocationId": "S02_home",
+      "speedMode": "SHELF_SPEED_MODE_NORMAL"
+    },
+    {
+      "id": "S03",
+      "name": "ワゴン",
+      "pose": {
+        "x": -2.7765254092602314,
+        "y": 1.3695738987512485,
+        "theta": -0.0016480916630610216
+      },
+      "size": {
+        "width": 0.489,
+        "depth": 0.329,
+        "height": 1.5
+      },
+      "appearance": "SHELF_APPEARANCE_KACHAKA_SHELF_2DRAWERS",
+      "recognizableNames": [
+        {
+          "name": "ワゴン"
+        }
+      ],
+      "homeLocationId": "S03_home",
+      "speedMode": "SHELF_SPEED_MODE_NORMAL"
+    }
+  ]
+}
