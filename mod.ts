@@ -214,8 +214,7 @@ export class KachakaApiClient {
   }
 
   static async create(hostname: string) {
-    const protoPath = new URL("./protos/kachaka-api.proto", import.meta.url);
-    const protoFile = await Deno.readTextFile(protoPath);
+    const protoFile = await Deno.readTextFile("./protos/kachaka-api.proto");
     const client = new KachakaApiClient(hostname, protoFile);
     await client.updateResolver();
     return client;
