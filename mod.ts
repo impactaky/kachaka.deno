@@ -15,19 +15,10 @@ export * from "./protos/kachaka-api.d.ts";
 // interface KachakaClientOption {
 // }
 
-// type OnlyOneKey<T extends object> = {
-//   [K in keyof T]: (Exclude<keyof T, K> extends never ? T[K] : T)
-// }[keyof T];
-
 interface WithMetadata {
   metadata?: Metadata;
 }
 type WithoutMetadata<T extends WithMetadata> = Omit<T, "metadata">;
-
-type SingleKey<T> = {
-  [K in keyof T]: (Pick<T, K> extends T ? K : never);
-}[keyof T];
-type IfSingleThenValue<T> = T extends Record<SingleKey<T>, infer U> ? U : T;
 
 function removeMetadata<T extends object & WithMetadata>(
   response: T,
@@ -42,7 +33,7 @@ function extractSingleValue<T extends object & WithMetadata>(response: T) {
   return rest[keys[0]];
 }
 
-export class ResponseHandler<T extends object & WithMetadata, U, V, W> {
+export class ValueHandler<T extends object & WithMetadata, U, V, W> {
   #getFunction;
   #setFunction;
   #pickFunction;
@@ -107,79 +98,79 @@ export class KachakaApiClient {
       root: protoFile,
       serviceName: "KachakaApi",
     });
-    this.robotSerialNumber = new ResponseHandler(
+    this.robotSerialNumber = new ValueHandler(
       this.#client.GetRobotSerialNumber,
       extractSingleValue,
     );
-    this.robotVersion = new ResponseHandler(
+    this.robotVersion = new ValueHandler(
       this.#client.GetRobotVersion,
       extractSingleValue,
     );
-    this.robotPose = new ResponseHandler(
+    this.robotPose = new ValueHandler(
       this.#client.GetRobotPose,
       extractSingleValue,
     );
-    this.pngMap = new ResponseHandler(
+    this.pngMap = new ValueHandler(
       this.#client.GetPngMap,
       extractSingleValue,
     );
-    this.objectDetection = new ResponseHandler(
+    this.objectDetection = new ValueHandler(
       this.#client.GetObjectDetection,
       removeMetadata,
     );
-    this.rosImu = new ResponseHandler(
+    this.rosImu = new ValueHandler(
       this.#client.GetRosImu,
       extractSingleValue,
     );
-    this.rosOdometry = new ResponseHandler(
+    this.rosOdometry = new ValueHandler(
       this.#client.GetRosOdometry,
       extractSingleValue,
     );
-    this.rosLaserScan = new ResponseHandler(
+    this.rosLaserScan = new ValueHandler(
       this.#client.GetRosLaserScan,
       extractSingleValue,
     );
-    this.frontCameraRosCameraInfo = new ResponseHandler(
+    this.frontCameraRosCameraInfo = new ValueHandler(
       this.#client.GetFrontCameraRosCameraInfo,
       extractSingleValue,
     );
-    this.frontCameraRosImage = new ResponseHandler(
+    this.frontCameraRosImage = new ValueHandler(
       this.#client.GetFrontCameraRosImage,
       extractSingleValue,
     );
-    this.frontCameraRosCompressedImage = new ResponseHandler(
+    this.frontCameraRosCompressedImage = new ValueHandler(
       this.#client.GetFrontCameraRosCompressedImage,
       extractSingleValue,
     );
-    this.commandState = new ResponseHandler(
+    this.commandState = new ValueHandler(
       this.#client.GetCommandState,
       removeMetadata,
     );
-    this.lastCommandResult = new ResponseHandler(
+    this.lastCommandResult = new ValueHandler(
       this.#client.GetLastCommandResult,
       removeMetadata,
     );
-    this.locations = new ResponseHandler(
+    this.locations = new ValueHandler(
       this.#client.GetLocations,
       (response) => response.locations,
     );
-    this.shelves = new ResponseHandler(
+    this.shelves = new ValueHandler(
       this.#client.GetShelves,
       extractSingleValue,
     );
-    this.autoHomingEnabled = new ResponseHandler(
+    this.autoHomingEnabled = new ValueHandler(
       this.#client.GetAutoHomingEnabled,
       extractSingleValue,
       (enable: boolean) =>
         this.#client.SetAutoHomingEnabled({ enable: enable }),
     );
-    this.manualControlEnabled = new ResponseHandler(
+    this.manualControlEnabled = new ValueHandler(
       this.#client.GetManualControlEnabled,
       extractSingleValue,
       (enable: boolean) =>
         this.#client.SetAutoHomingEnabled({ enable: enable }),
     );
-    this.robotVelocity = new ResponseHandler(
+    this.robotVelocity = new ValueHandler(
       async (request) => {
         const { metadata, odometry } = await this.#client.GetRosOdometry(
           request,
@@ -190,7 +181,7 @@ export class KachakaApiClient {
       removeMetadata,
       this.#client.SetRobotVelocity,
     );
-    this.historyList = new ResponseHandler(
+    this.historyList = new ValueHandler(
       this.#client.GetHistoryList,
       extractSingleValue,
     );
