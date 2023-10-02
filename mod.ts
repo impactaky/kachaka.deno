@@ -25,8 +25,6 @@ function removeMetadata<T extends object & WithMetadata>(
 function extractSingleValue<T extends object & WithMetadata>(response: T) {
   const rest = removeMetadata(response);
   const keys = Object.keys(rest) as Array<keyof WithoutMetadata<T>>;
-  console.log("debug::", keys[0]);
-  console.log("debug::", rest[keys[0]]);
   return rest[keys[0]];
 }
 

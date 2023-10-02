@@ -31,7 +31,6 @@ class ResponseStore<T extends WithMetadata> extends EventEmitter {
     return this.#value;
   }
   async waitForCursor(request: pb.GetRequest): Promise<T> {
-    console.log(request);
     const arrived: Promise<T> = new Promise((resolve) => {
       const listener = (value: T) => {
         if (value.metadata!.cursor! > request.metadata!.cursor!) {
@@ -42,7 +41,6 @@ class ResponseStore<T extends WithMetadata> extends EventEmitter {
       this.on("data", listener);
     });
     if (this.#value.metadata!.cursor! > request.metadata!.cursor!) {
-      console.log(this.value);
       return this.#value;
     }
     return await arrived;
