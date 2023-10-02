@@ -1,13 +1,8 @@
 import {
+  pb,
   getClient,
-  GetRequest,
   GrpcClient,
-  KachakaApi,
-  Metadata,
-  Pose,
-  Result,
-  SetRobotVelocityRequest,
-  StartCommandRequest,
+  sleep,
 } from "./deps.ts";
 import { ShelfLocationResolver } from "./kachaka/layout.ts";
 export * from "./protos/kachaka-api.d.ts";
@@ -16,7 +11,7 @@ export * from "./protos/kachaka-api.d.ts";
 // }
 
 interface WithMetadata {
-  metadata?: Metadata;
+  metadata?: pb.Metadata;
 }
 type WithoutMetadata<T extends WithMetadata> = Omit<T, "metadata">;
 
@@ -30,6 +25,8 @@ function removeMetadata<T extends object & WithMetadata>(
 function extractSingleValue<T extends object & WithMetadata>(response: T) {
   const rest = removeMetadata(response);
   const keys = Object.keys(rest) as Array<keyof WithoutMetadata<T>>;
+  console.log("debug::", keys[0]);
+  console.log("debug::", rest[keys[0]]);
   return rest[keys[0]];
 }
 
@@ -38,7 +35,7 @@ export class ValueHandler<T extends object & WithMetadata, U, V, W> {
   #setFunction;
   #pickFunction;
   constructor(
-    getFunction: (request: GetRequest) => Promise<T>,
+    getFunction: (request: pb.GetRequest) => Promise<T>,
     pickFunction: (response: T) => U,
     setFunction?: (request: V) => Promise<W>,
   ) {
@@ -64,12 +61,12 @@ export class ValueHandler<T extends object & WithMetadata, U, V, W> {
   }
 }
 
-interface CommandOptions extends Omit<StartCommandRequest, "command"> {
+interface CommandOptions extends Omit<pb.StartCommandRequest, "command"> {
   waitForCompletion?: boolean;
 }
 
 export class KachakaApiClient {
-  #client: GrpcClient & KachakaApi;
+  #client: GrpcClient & pb.KachakaApi;
   #nameResolver = new ShelfLocationResolver();
   robotSerialNumber;
   robotVersion;
@@ -92,7 +89,7 @@ export class KachakaApiClient {
   historyList;
 
   constructor(hostname: string, protoFile: string) {
-    this.#client = getClient<KachakaApi>({
+    this.#client = getClient<pb.KachakaApi>({
       hostname: hostname,
       port: 26400,
       root: protoFile,
@@ -187,10 +184,6 @@ export class KachakaApiClient {
     );
   }
 
-  destructor() {
-    this.#client.close();
-  }
-
   client() {
     return this.#client;
   }
@@ -211,14 +204,16 @@ export class KachakaApiClient {
     return client;
   }
 
-  close() {
-    return this.#client.close();
+  async close() {
+    this.#client.close();
+    // Workaround for timeout
+    await sleep(0.1);
   }
 
   async startCommand(
-    request: StartCommandRequest,
+    request: pb.StartCommandRequest,
     options: CommandOptions = {},
-  ): Promise<Result> {
+  ): Promise<pb.Result> {
     const { waitForCompletion = true } = options;
     let { cursor } = (await this.commandState.get(0)).metadata!;
     request.cancelAll = options.cancelAll;
@@ -241,7 +236,7 @@ export class KachakaApiClient {
     shelf: string,
     location: string,
     options?: CommandOptions,
-  ): Promise<Result> {
+  ) {
     const shelfId = this.#nameResolver.shelfId(shelf);
     const locationId = this.#nameResolver.locationId(location);
     return this.startCommand(
@@ -275,7 +270,7 @@ export class KachakaApiClient {
   moveToLocation(
     location: string,
     options?: CommandOptions,
-  ): Promise<Result> {
+  ) {
     const locationId = this.#nameResolver.locationId(location);
     return this.startCommand({
       command: { moveToLocationCommand: { targetLocationId: locationId } },
@@ -296,14 +291,14 @@ export class KachakaApiClient {
     );
   }
 
-  speak(text: string, options?: CommandOptions): Promise<Result> {
+  speak(text: string, options?: CommandOptions) {
     return this.startCommand(
       { command: { speakCommand: { text: text } } },
       options,
     );
   }
 
-  moveToPose(pose: Pose, options?: CommandOptions) {
+  moveToPose(pose: pb.Pose, options?: CommandOptions) {
     return this.startCommand(
       {
         command: {

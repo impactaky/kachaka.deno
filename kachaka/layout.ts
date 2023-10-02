@@ -1,9 +1,9 @@
-import { Location, Shelf } from "../deps.ts";
+import { pb } from "../deps.ts";
 
 export class ShelfLocationResolver {
   constructor(
-    public locations: Location[] = [],
-    public shelves: Shelf[] = [],
+    public locations: pb.Location[] = [],
+    public shelves: pb.Shelf[] = [],
   ) {}
 
   shelfName(id: string) {

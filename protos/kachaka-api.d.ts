@@ -14,7 +14,7 @@ export interface KachakaApi {
   GetFrontCameraRosImage(request: GetRequest): Promise<GetFrontCameraRosImageResponse>;
   GetFrontCameraRosCompressedImage(request: GetRequest): Promise<GetFrontCameraRosCompressedImageResponse>;
   StartCommand(request: StartCommandRequest): Promise<StartCommandResponse>;
-  CancelCommand(request: EmptyRequest): Promise<CancelCommandResponse>;
+  // CancelCommand(request: EmptyRequest): Promise<CancelCommandResponse>;
   GetCommandState(request: GetRequest): Promise<GetCommandStateResponse>;
   GetLastCommandResult(request: GetRequest): Promise<GetLastCommandResultResponse>;
   GetLocations(request: GetRequest): Promise<GetLocationsResponse>;
@@ -25,8 +25,8 @@ export interface KachakaApi {
   GetManualControlEnabled(request: GetRequest): Promise<GetManualControlEnabledResponse>;
   SetRobotVelocity(request: SetRobotVelocityRequest): Promise<SetRobotVelocityResponse>;
   GetHistoryList(request: GetRequest): Promise<GetHistoryListResponse>;
-  GetStaticTransform(request: GetRequest): Promise<GetStaticTransformResponse>;
-  GetDynamicTransform(request: EmptyRequest): AsyncGenerator<GetDynamicTransformResponse>;
+  // GetStaticTransform(request: GetRequest): Promise<GetStaticTransformResponse>;
+  // GetDynamicTransform(request: EmptyRequest): AsyncGenerator<GetDynamicTransformResponse>;
 }
 
 export interface Metadata {

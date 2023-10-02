@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "cursor": "12798837101933"
+  },
+  "locations": [
+    {
+      "id": "L46",
+      "name": "キッチン",
+      "pose": {
+        "x": 0.917531,
+        "y": 1.881892,
+        "theta": 1.120359
+      }
+    },
+    {
+      "id": "L64",
+      "name": "洗面所",
+      "pose": {
+        "x": -2.720722,
+        "y": 1.488203,
+        "theta": -3.102203
+      }
+    },
+    {
+      "id": "L67",
+      "name": "リビング",
+      "pose": {
+        "x": 0.428699,
+        "y": 0.903823,
+        "theta": -3.138583
+      }
+    },
+    {
+      "id": "L74",
+      "name": "仕事部屋",
+      "pose": {
+        "x": 0.892842,
+        "y": 0.192824,
+        "theta": 1.59491
+      }
+    },
+    {
+      "id": "S01_home",
+      "name": "シェルフのホーム",
+      "pose": {
+        "x": 0.032173,
+        "y": -1.101951,
+        "theta": 1.553321
+      },
+      "type": "LOCATION_TYPE_SHELF_HOME",
+      "undockShelfAligningToWall": true
+    },
+    {
+      "id": "S02_home",
+      "name": "ゴミ箱のホーム",
+      "pose": {
+        "x": 0.959066,
+        "y": 1.342708,
+        "theta": -3.116119
+      },
+      "type": "LOCATION_TYPE_SHELF_HOME",
+      "undockShelfAligningToWall": true
+    },
+    {
+      "id": "S03_home",
+      "name": "ワゴンのホーム",
+      "pose": {
+        "x": -2.936523,
+        "y": 1.649079,
+        "theta": 0.021748
+      },
+      "type": "LOCATION_TYPE_SHELF_HOME",
+      "undockShelfAligningToWall": true
+    },
+    {
+      "id": "home",
+      "name": "充電ドック",
+      "pose": {
+        "x": -0.042429,
+        "y": 0.015453,
+        "theta": 0.008589000000000001
+      },
+      "type": "LOCATION_TYPE_CHARGER"
+    }
+  ],
+  "defaultLocationId": "L67"
+}
