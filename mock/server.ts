@@ -1,9 +1,6 @@
 import { GrpcServer } from "./deps.ts";
 import { pb } from "../deps.ts";
 import EventEmitter from "https://deno.land/x/events/mod.ts";
-import { dirname, fromFileUrl } from "https://deno.land/std/path/mod.ts";
-
-const SCRIPT_DIR = dirname(fromFileUrl(import.meta.url));
 
 const port = 26400;
 const server = new GrpcServer();
@@ -181,13 +178,13 @@ const [
   shelves,
 ] = await Promise.all([
   createFromJson<pb.GetLocationsResponse>(
-    `${SCRIPT_DIR}/default_value/locations.json`,
+    "./mock/default_value/locations.json",
   ),
   createFromJson<pb.GetRobotPoseResponse>(
-    `${SCRIPT_DIR}/default_value/pose.json`,
+    "./mock/default_value/pose.json",
   ),
   createFromJson<pb.GetShelvesResponse>(
-    `${SCRIPT_DIR}/default_value/shelves.json`,
+    "./mock/default_value/shelves.json",
   ),
 ]);
 const mock = new KachakaApiImpl(
