@@ -23,7 +23,7 @@ class ResponseStore<T extends WithMetadata> extends EventEmitter {
     this.#value.metadata = this.genMetadata();
   }
   genMetadata(): pb.Metadata {
-    return {cursor: Date.now()};
+    return { cursor: Date.now() };
   }
   set value(v: T) {
     this.#value = v;
@@ -51,7 +51,10 @@ class ResponseStore<T extends WithMetadata> extends EventEmitter {
 }
 
 function errorCommandResult(errorCode: number): pb.StartCommandResponse {
-  return { result: { success: false, errorCode: errorCode }, commandId: "xxxx" };
+  return {
+    result: { success: false, errorCode: errorCode },
+    commandId: "xxxx",
+  };
 }
 
 async function createFromJson<T>(path: string): Promise<T> {
@@ -60,77 +63,103 @@ async function createFromJson<T>(path: string): Promise<T> {
 }
 
 class KachakaApiImpl implements pb.KachakaApi {
-  #robotSerialNumber = new ResponseStore<pb.GetRobotSerialNumberResponse>({serialNumber: "XXX12345"});
-  GetRobotSerialNumber = (request: pb.GetRequest) => this.#robotSerialNumber.waitForCursor(request);
-  #robotVersion = new ResponseStore<pb.GetRobotVersionResponse>({version: "2.1.0"});
-  GetRobotVersion = (request: pb.GetRequest) => this.#robotVersion.waitForCursor(request);
+  #robotSerialNumber = new ResponseStore<pb.GetRobotSerialNumberResponse>({
+    serialNumber: "XXX12345",
+  });
+  GetRobotSerialNumber = (request: pb.GetRequest) =>
+    this.#robotSerialNumber.waitForCursor(request);
+  #robotVersion = new ResponseStore<pb.GetRobotVersionResponse>({
+    version: "2.1.0",
+  });
+  GetRobotVersion = (request: pb.GetRequest) =>
+    this.#robotVersion.waitForCursor(request);
   #robotPose;
-  GetRobotPose = (request: pb.GetRequest) => this.#robotPose.waitForCursor(request);
+  GetRobotPose = (request: pb.GetRequest) =>
+    this.#robotPose.waitForCursor(request);
   #pngMap = new ResponseStore<pb.GetPngMapResponse>({});
   GetPngMap = (request: pb.GetRequest) => this.#pngMap.waitForCursor(request);
   #objectDetection = new ResponseStore<pb.GetObjectDetectionResponse>({});
-  GetObjectDetection = (request: pb.GetRequest) => this.#objectDetection.waitForCursor(request);
+  GetObjectDetection = (request: pb.GetRequest) =>
+    this.#objectDetection.waitForCursor(request);
   #rosImu = new ResponseStore<pb.GetRosImuResponse>({});
   GetRosImu = (request: pb.GetRequest) => this.#rosImu.waitForCursor(request);
   #rosOdometry = new ResponseStore<pb.GetRosOdometryResponse>({});
-  GetRosOdometry = (request: pb.GetRequest) => this.#rosOdometry.waitForCursor(request);
+  GetRosOdometry = (request: pb.GetRequest) =>
+    this.#rosOdometry.waitForCursor(request);
   #rosLaserScan = new ResponseStore<pb.GetRosLaserScanResponse>({});
-  GetRosLaserScan = (request: pb.GetRequest) => this.#rosLaserScan.waitForCursor(request);
-  #frontCameraRosCameraInfo = new ResponseStore<pb.GetFrontCameraRosCameraInfoResponse>({});
-  GetFrontCameraRosCameraInfo = (request: pb.GetRequest) => this.#frontCameraRosCameraInfo.waitForCursor(request);
-  #frontCameraRosImage = new ResponseStore<pb.GetFrontCameraRosImageResponse>({});
-  GetFrontCameraRosImage = (request: pb.GetRequest) => this.#frontCameraRosImage.waitForCursor(request);
-  #frontCameraRosCompressedImage = new ResponseStore<pb.GetFrontCameraRosCompressedImageResponse>({});
-  GetFrontCameraRosCompressedImage = (request: pb.GetRequest) => this.#frontCameraRosCompressedImage.waitForCursor(request);
-  StartCommand = async (request: pb.StartCommandRequest): Promise<pb.StartCommandResponse> => {
+  GetRosLaserScan = (request: pb.GetRequest) =>
+    this.#rosLaserScan.waitForCursor(request);
+  #frontCameraRosCameraInfo = new ResponseStore<
+    pb.GetFrontCameraRosCameraInfoResponse
+  >({});
+  GetFrontCameraRosCameraInfo = (request: pb.GetRequest) =>
+    this.#frontCameraRosCameraInfo.waitForCursor(request);
+  #frontCameraRosImage = new ResponseStore<pb.GetFrontCameraRosImageResponse>(
+    {},
+  );
+  GetFrontCameraRosImage = (request: pb.GetRequest) =>
+    this.#frontCameraRosImage.waitForCursor(request);
+  #frontCameraRosCompressedImage = new ResponseStore<
+    pb.GetFrontCameraRosCompressedImageResponse
+  >({});
+  GetFrontCameraRosCompressedImage = (request: pb.GetRequest) =>
+    this.#frontCameraRosCompressedImage.waitForCursor(request);
+  StartCommand = async (
+    request: pb.StartCommandRequest,
+  ): Promise<pb.StartCommandResponse> => {
     if (request.command!.moveShelfCommand) {
-      const {targetShelfId, destinationLocationId} = request.command!.moveShelfCommand!
+      const { targetShelfId, destinationLocationId } = request.command!
+        .moveShelfCommand!;
       if (!targetShelfId) return errorCommandResult(10250);
       if (!destinationLocationId) return errorCommandResult(10251);
-    }
-    else if (request.command!.returnShelfCommand) {
-    }
-    else if (request.command!.undockShelfCommand) {
-    }
-    else if (request.command!.moveToLocationCommand) {
-    }
-    else if (request.command!.returnHomeCommand) {
-    }
-    else if (request.command!.dockShelfCommand) {
-    }
-    else if (request.command!.speakCommand) {
-    }
-    else if (request.command!.moveToPoseCommand) {
-    }
-    else {
+    } else if (request.command!.returnShelfCommand) {
+    } else if (request.command!.undockShelfCommand) {
+    } else if (request.command!.moveToLocationCommand) {
+    } else if (request.command!.returnHomeCommand) {
+    } else if (request.command!.dockShelfCommand) {
+    } else if (request.command!.speakCommand) {
+    } else if (request.command!.moveToPoseCommand) {
+    } else {
       return { result: {} };
     }
     return { result: { success: true } };
-  }
+  };
   // CancelCommand(request: EmptyRequest): Promise<CancelCommandResponse>;
   #commandState = new ResponseStore<pb.GetCommandStateResponse>({});
-  GetCommandState = (request: pb.GetRequest) => this.#commandState.waitForCursor(request);
+  GetCommandState = (request: pb.GetRequest) =>
+    this.#commandState.waitForCursor(request);
   #lastCommandResult = new ResponseStore<pb.GetLastCommandResultResponse>({});
-  GetLastCommandResult = (request: pb.GetRequest) => this.#lastCommandResult.waitForCursor(request);
+  GetLastCommandResult = (request: pb.GetRequest) =>
+    this.#lastCommandResult.waitForCursor(request);
   #locations;
-  GetLocations = (request: pb.GetRequest) => this.#locations.waitForCursor(request);
+  GetLocations = (request: pb.GetRequest) =>
+    this.#locations.waitForCursor(request);
   #shelves;
   GetShelves = (request: pb.GetRequest) => this.#shelves.waitForCursor(request);
   #autoHomingEnabled = new ResponseStore<pb.GetAutoHomingEnabledResponse>({});
-  SetAutoHomingEnabled = (request: pb.SetAutoHomingEnabledRequest): Promise<pb.SetAutoHomingEnabledResponse> => {
-    this.#autoHomingEnabled.value = {enabled: request.enable!};
-    return Promise.resolve({result: {success: true}});
-  }
-  GetAutoHomingEnabled = (request: pb.GetRequest) => this.#autoHomingEnabled.waitForCursor(request);
-  #manualControlEnabled = new ResponseStore<pb.GetManualControlEnabledResponse>({});
-  SetManualControlEnabled = (request: pb.SetManualControlEnabledRequest): Promise<pb.SetManualControlEnabledResponse> => {
-    this.#manualControlEnabled.value = {enabled: request.enable!};
-    return Promise.resolve({result: {success: true}});
-  }
-  GetManualControlEnabled = (request: pb.GetRequest) => this.#manualControlEnabled.waitForCursor(request);
+  SetAutoHomingEnabled = (
+    request: pb.SetAutoHomingEnabledRequest,
+  ): Promise<pb.SetAutoHomingEnabledResponse> => {
+    this.#autoHomingEnabled.value = { enabled: request.enable! };
+    return Promise.resolve({ result: { success: true } });
+  };
+  GetAutoHomingEnabled = (request: pb.GetRequest) =>
+    this.#autoHomingEnabled.waitForCursor(request);
+  #manualControlEnabled = new ResponseStore<pb.GetManualControlEnabledResponse>(
+    {},
+  );
+  SetManualControlEnabled = (
+    request: pb.SetManualControlEnabledRequest,
+  ): Promise<pb.SetManualControlEnabledResponse> => {
+    this.#manualControlEnabled.value = { enabled: request.enable! };
+    return Promise.resolve({ result: { success: true } });
+  };
+  GetManualControlEnabled = (request: pb.GetRequest) =>
+    this.#manualControlEnabled.waitForCursor(request);
   // SetRobotVelocity(request: SetRobotVelocityRequest): Promise<SetRobotVelocityResponse>;
   #historyList = new ResponseStore<pb.GetHistoryListResponse>({});
-  GetHistoryList = (request: pb.GetRequest) => this.#historyList.waitForCursor(request);
+  GetHistoryList = (request: pb.GetRequest) =>
+    this.#historyList.waitForCursor(request);
   // #staticTransform = new ResponseStore<pb.GetStaticTransformResponse>({});
   // GetStaticTransform = (request: pb.GetRequest) => this.#staticTransform.waitForCursor(request);
   // #dynamicTransform = new ResponseStore<pb.GetDynamicTransformResponse>({});
@@ -138,7 +167,7 @@ class KachakaApiImpl implements pb.KachakaApi {
   constructor(
     locations: pb.GetLocationsResponse,
     pose: pb.GetRobotPoseResponse,
-    shelves: pb.GetShelvesResponse
+    shelves: pb.GetShelvesResponse,
   ) {
     this.#shelves = new ResponseStore<pb.GetShelvesResponse>(shelves);
     this.#robotPose = new ResponseStore<pb.GetRobotPoseResponse>(pose);
@@ -151,14 +180,20 @@ const [
   pose,
   shelves,
 ] = await Promise.all([
-  createFromJson<pb.GetLocationsResponse>(`${SCRIPT_DIR}/default_value/locations.json`),
-  createFromJson<pb.GetRobotPoseResponse>(`${SCRIPT_DIR}/default_value/pose.json`),
-  createFromJson<pb.GetShelvesResponse>(`${SCRIPT_DIR}/default_value/shelves.json`),
+  createFromJson<pb.GetLocationsResponse>(
+    `${SCRIPT_DIR}/default_value/locations.json`,
+  ),
+  createFromJson<pb.GetRobotPoseResponse>(
+    `${SCRIPT_DIR}/default_value/pose.json`,
+  ),
+  createFromJson<pb.GetShelvesResponse>(
+    `${SCRIPT_DIR}/default_value/shelves.json`,
+  ),
 ]);
 const mock = new KachakaApiImpl(
   locations,
   pose,
-  shelves
+  shelves,
 );
 server.addService<KachakaApiImpl>(protoFile, mock);
 

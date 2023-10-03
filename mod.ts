@@ -1,9 +1,4 @@
-import {
-  pb,
-  getClient,
-  GrpcClient,
-  sleep,
-} from "./deps.ts";
+import { getClient, GrpcClient, pb, sleep } from "./deps.ts";
 import { ShelfLocationResolver } from "./kachaka/layout.ts";
 export * from "./protos/kachaka-api.d.ts";
 
