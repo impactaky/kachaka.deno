@@ -5,8 +5,8 @@ import EventEmitter from "https://deno.land/x/events/mod.ts";
 const port = 26400;
 const server = new GrpcServer();
 
-const protoPath = new URL("../protos/kachaka-api.proto", import.meta.url);
-const protoFile = await Deno.readTextFile(protoPath);
+// const protoPath = new URL("../protos/kachaka-api.proto", import.meta.url);
+const protoFile = await Deno.readTextFile("./protos/kachaka-api.proto");
 
 interface WithMetadata {
   metadata?: pb.Metadata;
