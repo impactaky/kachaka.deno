@@ -1,12 +1,13 @@
 import { GrpcServer } from "./deps.ts";
 import { pb } from "../deps.ts";
 import EventEmitter from "https://deno.land/x/events/mod.ts";
+import { fetchText } from "../util/util.ts";
 
 const port = 26400;
 const server = new GrpcServer();
 
 const protoPath = new URL("../protos/kachaka-api.proto", import.meta.url);
-const protoFile = await Deno.readTextFile(protoPath);
+const protoFile = await fetchText(protoPath);
 
 interface WithMetadata {
   metadata?: pb.Metadata;
@@ -55,7 +56,7 @@ function errorCommandResult(errorCode: number): pb.StartCommandResponse {
 }
 
 async function createFromJson<T>(path: string): Promise<T> {
-  const content = await Deno.readTextFile(path);
+  const content = await fetchText(new URL(path, import.meta.url));
   return JSON.parse(content);
 }
 
@@ -178,13 +179,13 @@ const [
   shelves,
 ] = await Promise.all([
   createFromJson<pb.GetLocationsResponse>(
-    "./mock/default_value/locations.json",
+    "./default_value/locations.json",
   ),
   createFromJson<pb.GetRobotPoseResponse>(
-    "./mock/default_value/pose.json",
+    "./default_value/pose.json",
   ),
   createFromJson<pb.GetShelvesResponse>(
-    "./mock/default_value/shelves.json",
+    "./default_value/shelves.json",
   ),
 ]);
 const mock = new KachakaApiImpl(

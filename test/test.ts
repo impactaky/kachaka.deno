@@ -4,9 +4,10 @@ import {
 } from "https://deno.land/std/testing/asserts.ts";
 import { KachakaApiClient } from "../mod.ts";
 import { pb } from "../deps.ts";
+import { fetchText } from "../util/util.ts";
 
 async function createFromJson<T>(path: string): Promise<T> {
-  const content = await Deno.readTextFile(path);
+  const content = await fetchText(new URL(path, import.meta.url));
   return JSON.parse(content);
 }
 
@@ -43,7 +44,7 @@ Deno.test("robotPose.get", async () => {
   const client = await KachakaApiClient.create("127.0.0.1");
   const v = await client.robotPose.get();
   const { pose } = await createFromJson<pb.GetRobotPoseResponse>(
-    "./mock/default_value/pose.json",
+    "../mock/default_value/pose.json",
   );
   assertCompareResponse(v, pose);
   await client.close();

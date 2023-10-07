@@ -1,5 +1,6 @@
 import { getClient, GrpcClient, pb, sleep } from "./deps.ts";
 import { ShelfLocationResolver } from "./kachaka/layout.ts";
+import { fetchText } from "./util/util.ts";
 export * from "./protos/kachaka-api.d.ts";
 
 // interface KachakaClientOption {
@@ -191,7 +192,9 @@ export class KachakaApiClient {
   }
 
   static async create(hostname: string) {
-    const protoFile = await Deno.readTextFile("./protos/kachaka-api.proto");
+    const protoFile = await fetchText(
+      new URL("./protos/kachaka-api.proto", import.meta.url),
+    );
     const client = new KachakaApiClient(hostname, protoFile);
     await client.updateResolver();
     return client;
