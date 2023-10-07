@@ -11,17 +11,13 @@ async function createFromJson<T>(path: string): Promise<T> {
   return JSON.parse(content);
 }
 
-interface Indexable {
-  [key: string]: any;
-}
-
-function assertCompareResponse<T extends Indexable | undefined>(
+function assertCompareResponse<T>(
   lhs: T,
   rhs: T,
 ) {
   assertExists(lhs);
   assertExists(rhs);
-  return Object.keys(lhs).every((key) =>
+  return (Object.keys(lhs) as Array<keyof typeof lhs>).every((key) =>
     assertStrictEquals(lhs[key], rhs[key])
   );
 }

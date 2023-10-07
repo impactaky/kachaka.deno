@@ -33,9 +33,16 @@ jobs:
         if: runner.os == 'Linux'
         run: deno lint
 
-      - name: Run tests
-        run: deno run --allow-net --allow-read mock/server.ts
+      - name: Start mock server
+        run: |
+          deno run --allow-net --allow-read mock/server.ts &
+          echo $! > server.pid
+
+      - name: Run test
         run: deno test -A --coverage=.coverage
+
+      - name: Stop server
+        run: kill $(cat server.pid)
 
       - name: Create coverage report
         if: runner.os == 'Linux'
@@ -43,6 +50,6 @@ jobs:
 
       - name: Collect coverage
         if: runner.os == 'Linux'
-        uses: codecov/codecov-action@v1.0.10
+        uses: codecov/codecov-action@v3
         with:
           file: ./coverage.lcov
