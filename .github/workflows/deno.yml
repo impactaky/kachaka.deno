@@ -50,6 +50,6 @@ jobs:
 
       - name: Collect coverage
         if: runner.os == 'Linux'
-        uses: codecov/codecov-action@v1.0.10
+        uses: codecov/codecov-action@v3
         with:
           file: ./coverage.lcov
