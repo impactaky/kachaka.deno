@@ -1,6 +1,6 @@
 {
   "lint": {
-    "exclude": ["./protos/"]
+    "exclude": ["./protos/", "./mock/"]
   },
   "fmt": {
     "exclude": ["./protos/"]

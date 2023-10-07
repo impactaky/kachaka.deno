@@ -14,6 +14,7 @@ type WithoutMetadata<T extends WithMetadata> = Omit<T, "metadata">;
 function removeMetadata<T extends object & WithMetadata>(
   response: T,
 ): WithoutMetadata<T> {
+  // deno-lint-ignore no-unused-vars
   const { metadata, ...rest } = response;
   return rest;
 }
