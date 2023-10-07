@@ -34,7 +34,6 @@ jobs:
         run: deno lint
 
       - name: Run tests
-        run: deno run --allow-net --allow-read mock/server.ts
         run: deno test -A --coverage=.coverage
 
       - name: Create coverage report
