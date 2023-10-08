@@ -66,42 +66,53 @@ class KachakaApiImpl implements pb.KachakaApi {
   });
   GetRobotSerialNumber = (request: pb.GetRequest) =>
     this.#robotSerialNumber.waitForCursor(request);
+
   #robotVersion = new ResponseStore<pb.GetRobotVersionResponse>({
     version: "2.1.0",
   });
   GetRobotVersion = (request: pb.GetRequest) =>
     this.#robotVersion.waitForCursor(request);
+
   #robotPose;
   GetRobotPose = (request: pb.GetRequest) =>
     this.#robotPose.waitForCursor(request);
+
   #pngMap = new ResponseStore<pb.GetPngMapResponse>({});
   GetPngMap = (request: pb.GetRequest) => this.#pngMap.waitForCursor(request);
+
   #objectDetection = new ResponseStore<pb.GetObjectDetectionResponse>({});
   GetObjectDetection = (request: pb.GetRequest) =>
     this.#objectDetection.waitForCursor(request);
+
   #rosImu = new ResponseStore<pb.GetRosImuResponse>({});
   GetRosImu = (request: pb.GetRequest) => this.#rosImu.waitForCursor(request);
+
   #rosOdometry = new ResponseStore<pb.GetRosOdometryResponse>({});
   GetRosOdometry = (request: pb.GetRequest) =>
     this.#rosOdometry.waitForCursor(request);
+
   #rosLaserScan = new ResponseStore<pb.GetRosLaserScanResponse>({});
   GetRosLaserScan = (request: pb.GetRequest) =>
     this.#rosLaserScan.waitForCursor(request);
+
   #frontCameraRosCameraInfo = new ResponseStore<
     pb.GetFrontCameraRosCameraInfoResponse
   >({});
   GetFrontCameraRosCameraInfo = (request: pb.GetRequest) =>
     this.#frontCameraRosCameraInfo.waitForCursor(request);
+
   #frontCameraRosImage = new ResponseStore<pb.GetFrontCameraRosImageResponse>(
     {},
   );
   GetFrontCameraRosImage = (request: pb.GetRequest) =>
     this.#frontCameraRosImage.waitForCursor(request);
+
   #frontCameraRosCompressedImage = new ResponseStore<
     pb.GetFrontCameraRosCompressedImageResponse
   >({});
   GetFrontCameraRosCompressedImage = (request: pb.GetRequest) =>
     this.#frontCameraRosCompressedImage.waitForCursor(request);
+
   StartCommand = async (
     request: pb.StartCommandRequest,
   ): Promise<pb.StartCommandResponse> => {
@@ -122,18 +133,24 @@ class KachakaApiImpl implements pb.KachakaApi {
     }
     return { result: { success: true } };
   };
+
   // CancelCommand(request: EmptyRequest): Promise<CancelCommandResponse>;
+
   #commandState = new ResponseStore<pb.GetCommandStateResponse>({});
   GetCommandState = (request: pb.GetRequest) =>
     this.#commandState.waitForCursor(request);
+
   #lastCommandResult = new ResponseStore<pb.GetLastCommandResultResponse>({});
   GetLastCommandResult = (request: pb.GetRequest) =>
     this.#lastCommandResult.waitForCursor(request);
+
   #locations;
   GetLocations = (request: pb.GetRequest) =>
     this.#locations.waitForCursor(request);
+
   #shelves;
   GetShelves = (request: pb.GetRequest) => this.#shelves.waitForCursor(request);
+
   #autoHomingEnabled = new ResponseStore<pb.GetAutoHomingEnabledResponse>({});
   SetAutoHomingEnabled = (
     request: pb.SetAutoHomingEnabledRequest,
@@ -143,6 +160,7 @@ class KachakaApiImpl implements pb.KachakaApi {
   };
   GetAutoHomingEnabled = (request: pb.GetRequest) =>
     this.#autoHomingEnabled.waitForCursor(request);
+
   #manualControlEnabled = new ResponseStore<pb.GetManualControlEnabledResponse>(
     {},
   );
@@ -154,14 +172,18 @@ class KachakaApiImpl implements pb.KachakaApi {
   };
   GetManualControlEnabled = (request: pb.GetRequest) =>
     this.#manualControlEnabled.waitForCursor(request);
+
   // SetRobotVelocity(request: SetRobotVelocityRequest): Promise<SetRobotVelocityResponse>;
+
   #historyList = new ResponseStore<pb.GetHistoryListResponse>({});
   GetHistoryList = (request: pb.GetRequest) =>
     this.#historyList.waitForCursor(request);
+
   // #staticTransform = new ResponseStore<pb.GetStaticTransformResponse>({});
   // GetStaticTransform = (request: pb.GetRequest) => this.#staticTransform.waitForCursor(request);
   // #dynamicTransform = new ResponseStore<pb.GetDynamicTransformResponse>({});
   // GetDynamicTransform = (request: EmptyRequest) => this.#dynamicTransform.waitForCursor(request);
+
   constructor(
     locations: pb.GetLocationsResponse,
     pose: pb.GetRobotPoseResponse,
