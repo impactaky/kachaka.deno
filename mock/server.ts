@@ -1,7 +1,10 @@
 import { GrpcServer } from "./deps.ts";
 import { pb } from "../deps.ts";
 import EventEmitter from "https://deno.land/x/events/mod.ts";
-import { fetchText } from "../util/util.ts";
+import {
+  createFromJson as implCreateFromJson,
+  fetchText,
+} from "../util/util.ts";
 
 const port = 26400;
 const server = new GrpcServer();
@@ -55,9 +58,8 @@ function errorCommandResult(errorCode: number): pb.StartCommandResponse {
   };
 }
 
-async function createFromJson<T>(path: string): Promise<T> {
-  const content = await fetchText(new URL(path, import.meta.url));
-  return JSON.parse(content);
+function createFromJson<T>(path: string): Promise<T> {
+  return implCreateFromJson(new URL(path, import.meta.url));
 }
 
 class KachakaApiImpl implements pb.KachakaApi {
@@ -77,7 +79,7 @@ class KachakaApiImpl implements pb.KachakaApi {
   GetRobotPose = (request: pb.GetRequest) =>
     this.#robotPose.waitForCursor(request);
 
-  #pngMap = new ResponseStore<pb.GetPngMapResponse>({});
+  #pngMap;
   GetPngMap = (request: pb.GetRequest) => this.#pngMap.waitForCursor(request);
 
   #objectDetection = new ResponseStore<pb.GetObjectDetectionResponse>({});
@@ -188,10 +190,12 @@ class KachakaApiImpl implements pb.KachakaApi {
     locations: pb.GetLocationsResponse,
     pose: pb.GetRobotPoseResponse,
     shelves: pb.GetShelvesResponse,
+    map: pb.GetPngMapResponse,
   ) {
     this.#shelves = new ResponseStore<pb.GetShelvesResponse>(shelves);
     this.#robotPose = new ResponseStore<pb.GetRobotPoseResponse>(pose);
     this.#locations = new ResponseStore<pb.GetLocationsResponse>(locations);
+    this.#pngMap = new ResponseStore<pb.GetPngMapResponse>(map);
   }
 }
 
@@ -199,6 +203,7 @@ const [
   locations,
   pose,
   shelves,
+  map,
 ] = await Promise.all([
   createFromJson<pb.GetLocationsResponse>(
     "./default_value/locations.json",
@@ -209,11 +214,15 @@ const [
   createFromJson<pb.GetShelvesResponse>(
     "./default_value/shelves.json",
   ),
+  createFromJson<pb.GetShelvesResponse>(
+    "./default_value/pngMap.json",
+  ),
 ]);
 const mock = new KachakaApiImpl(
   locations,
   pose,
   shelves,
+  map,
 );
 server.addService<KachakaApiImpl>(protoFile, mock);
 

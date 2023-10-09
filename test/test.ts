@@ -4,11 +4,10 @@ import {
 } from "https://deno.land/std/testing/asserts.ts";
 import { KachakaApiClient } from "../mod.ts";
 import { pb } from "../deps.ts";
-import { fetchText } from "../util/util.ts";
+import { createFromJson as implCreateFromJson } from "../util/util.ts";
 
-async function createFromJson<T>(path: string): Promise<T> {
-  const content = await fetchText(new URL(path, import.meta.url));
-  return JSON.parse(content);
+function createFromJson<T>(path: string): Promise<T> {
+  return implCreateFromJson(new URL(path, import.meta.url));
 }
 
 function assertCompareResponse<T>(
@@ -43,5 +42,20 @@ Deno.test("robotPose.get", async () => {
     "../mock/default_value/pose.json",
   );
   assertCompareResponse(v, pose);
+  await client.close();
+});
+
+Deno.test("pngMap.get", async () => {
+  const client = await KachakaApiClient.create("127.0.0.1");
+  const [{ data }, png] = await Promise.all([
+    (await createFromJson<pb.GetPngMapResponse>(
+      "../mock/default_value/pngMap.json",
+    )).map!,
+    new Uint8Array(
+      await (await fetch(new URL("./data/map.png", import.meta.url)))
+        .arrayBuffer(),
+    ),
+  ]);
+  assertCompareResponse(data, png);
   await client.close();
 });
