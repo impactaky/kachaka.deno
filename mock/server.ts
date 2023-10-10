@@ -1,10 +1,7 @@
 import { GrpcServer } from "./deps.ts";
 import { pb } from "../deps.ts";
 import EventEmitter from "https://deno.land/x/events/mod.ts";
-import {
-  createFromJson as implCreateFromJson,
-  fetchText,
-} from "../util/util.ts";
+import { createFromJson, fetchText } from "../util/util.ts";
 
 const port = 26400;
 const server = new GrpcServer();
@@ -58,11 +55,7 @@ function errorCommandResult(errorCode: number): pb.StartCommandResponse {
   };
 }
 
-function createFromJson<T>(path: string): Promise<T> {
-  return implCreateFromJson(new URL(path, import.meta.url));
-}
-
-class KachakaApiImpl implements pb.KachakaApi {
+class KachakaApiMockServer implements pb.KachakaApi {
   #robotSerialNumber = new ResponseStore<pb.GetRobotSerialNumberResponse>({
     serialNumber: "XXX12345",
   });
@@ -197,34 +190,24 @@ class KachakaApiImpl implements pb.KachakaApi {
     this.#locations = new ResponseStore<pb.GetLocationsResponse>(locations);
     this.#pngMap = new ResponseStore<pb.GetPngMapResponse>(map);
   }
+
+  static async create(defaultValuePath: URL) {
+    const filePath = (name: string) => new URL(name, defaultValuePath);
+    const args = await Promise.all([
+      createFromJson<pb.GetLocationsResponse>(filePath("./locations.json")),
+      createFromJson<pb.GetRobotPoseResponse>(filePath("./pose.json")),
+      createFromJson<pb.GetShelvesResponse>(filePath("./shelves.json")),
+      createFromJson<pb.GetShelvesResponse>(filePath("./pngMap.json")),
+    ]);
+    const server = new KachakaApiMockServer(...args);
+    return server;
+  }
 }
 
-const [
-  locations,
-  pose,
-  shelves,
-  map,
-] = await Promise.all([
-  createFromJson<pb.GetLocationsResponse>(
-    "./default_value/locations.json",
-  ),
-  createFromJson<pb.GetRobotPoseResponse>(
-    "./default_value/pose.json",
-  ),
-  createFromJson<pb.GetShelvesResponse>(
-    "./default_value/shelves.json",
-  ),
-  createFromJson<pb.GetShelvesResponse>(
-    "./default_value/pngMap.json",
-  ),
-]);
-const mock = new KachakaApiImpl(
-  locations,
-  pose,
-  shelves,
-  map,
+const mock = await KachakaApiMockServer.create(
+  new URL("./default_value/", import.meta.url),
 );
-server.addService<KachakaApiImpl>(protoFile, mock);
+server.addService<KachakaApiMockServer>(protoFile, mock);
 
 console.log(`gonna listen on ${port} port`);
 for await (const conn of Deno.listen({ port })) {
