@@ -2,14 +2,11 @@ import { getClient, GrpcClient, pb, sleep } from "./deps.ts";
 import { ShelfLocationResolver } from "./kachaka/layout.ts";
 import { fetchText } from "./util/util.ts";
 export * from "./protos/kachaka-api.d.ts";
+import { WithMetadata, WithoutMetadata } from "./kachaka/interfaces.d.ts"
+import { ValueHandler } from "./kachaka/value_handler.ts"
 
 // interface KachakaClientOption {
 // }
-
-interface WithMetadata {
-  metadata?: pb.Metadata;
-}
-type WithoutMetadata<T extends WithMetadata> = Omit<T, "metadata">;
 
 function removeMetadata<T extends object & WithMetadata>(
   response: T,
@@ -23,37 +20,6 @@ function extractSingleValue<T extends object & WithMetadata>(response: T) {
   const rest = removeMetadata(response);
   const keys = Object.keys(rest) as Array<keyof WithoutMetadata<T>>;
   return rest[keys[0]];
-}
-
-export class ValueHandler<T extends object & WithMetadata, U, V, W> {
-  #getFunction;
-  #setFunction;
-  #pickFunction;
-  constructor(
-    getFunction: (request: pb.GetRequest) => Promise<T>,
-    pickFunction: (response: T) => U,
-    setFunction?: (request: V) => Promise<W>,
-  ) {
-    this.#getFunction = getFunction;
-    this.#pickFunction = pickFunction;
-    this.#setFunction = setFunction;
-  }
-  async get(): Promise<U>;
-  async get(cursor: number): Promise<T>;
-  async get(cursor?: number) {
-    if (cursor === undefined) {
-      const response = await this.#getFunction({ metadata: { cursor: 0 } });
-      return this.#pickFunction(response);
-    }
-    return await this.#getFunction({ metadata: { cursor: cursor } });
-  }
-  set(request: V) {
-    return this.#setFunction!(request);
-  }
-  async gett() {
-    const response = await this.get(0);
-    return this.#pickFunction(response);
-  }
 }
 
 interface CommandOptions extends Omit<pb.StartCommandRequest, "command"> {
