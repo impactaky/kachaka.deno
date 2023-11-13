@@ -2,8 +2,8 @@ import { getClient, GrpcClient, pb, sleep } from "./deps.ts";
 import { ShelfLocationResolver } from "./kachaka/layout.ts";
 import { fetchText } from "./util/util.ts";
 export * from "./protos/kachaka-api.d.ts";
-import { WithMetadata, WithoutMetadata } from "./kachaka/interfaces.d.ts"
-import { ValueHandler } from "./kachaka/value_handler.ts"
+import { WithMetadata, WithoutMetadata } from "./kachaka/interfaces.d.ts";
+import { ValueHandler } from "./kachaka/value_handler.ts";
 
 // interface KachakaClientOption {
 // }

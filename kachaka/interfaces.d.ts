@@ -5,4 +5,3 @@ export interface WithMetadata {
 }
 
 export type WithoutMetadata<T extends WithMetadata> = Omit<T, "metadata">;
-
