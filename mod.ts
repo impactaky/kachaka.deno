@@ -173,6 +173,18 @@ export class KachakaApiClient {
     await sleep(0.1);
   }
 
+  onSpeak(text: string, callback: () => void) {
+    this.lastCommandResult.registerCallback(
+      (result) => {
+        if (!result.command) return;
+        if (!result.command!.speakCommand) return;
+        if (result.command!.speakCommand!.text == text) {
+          callback();
+        }
+      },
+    );
+  }
+
   async startCommand(
     request: pb.StartCommandRequest,
     options: CommandOptions = {},
