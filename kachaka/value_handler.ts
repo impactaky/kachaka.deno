@@ -49,7 +49,7 @@ export class ValueHandler<T extends object & WithMetadata, U, V, W> {
       (cb) => cb !== callback,
     );
   }
-  onceNext(callback: (result: U) => void) {
+  registerCallbackOnce(callback: (result: U) => void) {
     const once = (result: U) => {
       this.unregisterCallback(once);
       callback(result);
