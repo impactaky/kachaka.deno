@@ -1,6 +1,9 @@
 import { pb } from "../deps.ts";
 import { WithMetadata } from "./interfaces.d.ts";
 
+export interface CallbackOptions {
+  once?: boolean;
+}
 export class ValueHandler<T extends object & WithMetadata, U, V, W> {
   #getFunction;
   #setFunction;
@@ -29,7 +32,7 @@ export class ValueHandler<T extends object & WithMetadata, U, V, W> {
     return this.#setFunction!(request);
   }
 
-  async callbackLoop() {
+  async #callbackLoop() {
     let cursor = (await this.get(0)).metadata!.cursor;
     while (this.#callbackFuncitons.length > 0) {
       const response = await this.get(cursor!);
@@ -37,23 +40,22 @@ export class ValueHandler<T extends object & WithMetadata, U, V, W> {
       this.#callbackFuncitons.forEach((cb) => cb(this.#pickFunction(response)));
     }
   }
-  registerCallback(callback: (result: U) => void) {
+  addListner(callback: (result: U) => void, options?: CallbackOptions) {
+    const callback_ = options?.once
+      ? (result: U) => {
+        this.removeListner(callback_);
+        callback(result);
+      }
+      : callback;
     const isCallbackRunning = this.#callbackFuncitons.length > 0;
-    this.#callbackFuncitons.push(callback);
+    this.#callbackFuncitons.push(callback_);
     if (!isCallbackRunning) {
-      this.callbackLoop();
+      this.#callbackLoop();
     }
   }
-  unregisterCallback(callback: (result: U) => void) {
+  removeListner(callback: (result: U) => void) {
     this.#callbackFuncitons = this.#callbackFuncitons.filter(
       (cb) => cb !== callback,
     );
-  }
-  registerCallbackOnce(callback: (result: U) => void) {
-    const once = (result: U) => {
-      this.unregisterCallback(once);
-      callback(result);
-    };
-    this.registerCallback(once);
   }
 }

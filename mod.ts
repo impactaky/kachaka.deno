@@ -3,7 +3,7 @@ import { ShelfLocationResolver } from "./kachaka/layout.ts";
 import { fetchText } from "./util/util.ts";
 export * from "./protos/kachaka-api.d.ts";
 import { WithMetadata, WithoutMetadata } from "./kachaka/interfaces.d.ts";
-import { ValueHandler } from "./kachaka/value_handler.ts";
+import { CallbackOptions, ValueHandler } from "./kachaka/value_handler.ts";
 
 // interface KachakaClientOption {
 // }
@@ -173,8 +173,8 @@ export class KachakaApiClient {
     await sleep(0.1);
   }
 
-  onSpeak(text: string, callback: () => void) {
-    this.lastCommandResult.registerCallback(
+  onSpeak(text: string, callback: () => void, options?: CallbackOptions) {
+    this.lastCommandResult.addListner(
       (result) => {
         if (!result.command) return;
         if (!result.command!.speakCommand) return;
@@ -182,6 +182,7 @@ export class KachakaApiClient {
           callback();
         }
       },
+      options,
     );
   }
 
