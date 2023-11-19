@@ -32,6 +32,15 @@ export class ValueHandler<T extends object & WithMetadata, U, V, W> {
     return this.#setFunction!(request);
   }
 
+  async *[Symbol.asyncIterator]() {
+    let cursor = 0;
+    while (true) {
+      const response = await this.get(cursor);
+      cursor = response.metadata!.cursor!;
+      yield this.#pickFunction(response);
+    }
+  }
+
   async #callbackLoop() {
     let cursor = (await this.get(0)).metadata!.cursor;
     while (this.#callbackFuncitons.length > 0) {
