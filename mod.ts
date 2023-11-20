@@ -173,14 +173,12 @@ export class KachakaApiClient {
     await sleep(0.1);
   }
 
-  onSpeak(text: string, callback: () => void, options?: CallbackOptions) {
+  onSpeak(callback: (text: string) => void, options?: CallbackOptions) {
     this.lastCommandResult.addListner(
       (result) => {
         if (!result.command) return;
         if (!result.command!.speakCommand) return;
-        if (result.command!.speakCommand!.text == text) {
-          callback();
-        }
+        callback(result.command!.speakCommand!.text!);
       },
       options,
     );
